@@ -1,4 +1,4 @@
-
+const session = require('express-session');
 const authServices = require('../../services/authServices');
 const userRole = require('../../models/userRols');
 exports.showlogin = (req,res)=>{
@@ -21,4 +21,14 @@ exports.showregister = (req,res)=>{
     res.render('auth/register');
 
 };
-exports.doregister = (req,res)=>{};
+exports.doregister = async(req,res)=>{
+
+    const {email , password,password_confirmation} = req.body;
+    const newUserId = await authServices.register(email,password);
+    if(!newUserId){
+        req.flash('errors',['در حال حاضر ثبت نام شما وجود ندارد']);
+        return res.redirect('/auth/register');
+    };
+    return res.redirect('/auth/login');
+
+};
